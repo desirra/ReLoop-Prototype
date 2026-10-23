@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>ReLoop Prototype</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<style>
+:root{box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);--bg:#f4f7f4;--fg:#16231b;--card:#fff;--mut:#5d6f63;--acc:#1a7f4b;--bd:#dbe4dd;--bad:#c0392b;--warn:#b7791f}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0f1712;--fg:#e6efe8;--card:#17221b;--mut:#98ab9e;--acc:#3ecf8e;--bd:#2a3a30;--bad:#ff7b6b;--warn:#f0b955}}
+:root[data-theme="dark"]{--bg:#0f1712;--fg:#e6efe8;--card:#17221b;--mut:#98ab9e;--acc:#3ecf8e;--bd:#2a3a30;--bad:#ff7b6b;--warn:#f0b955}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.45 system-ui,-apple-system,Segoe UI,sans-serif}
+.w{max-width:860px;margin:0 auto;padding:16px}
+h1{font-size:22px;margin:0}h2{font-size:16px;margin:0 0 8px}.sub{color:var(--mut);font-size:13px;margin:2px 0 12px}
+nav{display:flex;gap:6px;margin-bottom:14px}nav button{flex:1}
+button,select,input{font:inherit;color:var(--fg)}
+button{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:8px 12px;cursor:pointer}
+button.p,nav button.on{background:var(--acc);color:#fff;border-color:var(--acc)}
+button:disabled{opacity:.4;cursor:default}
+select,input{background:var(--card);border:1px solid var(--bd);border-radius:8px;padding:8px;max-width:100%}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:12px;padding:14px;margin-bottom:12px}
+.g{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px}
+.big{font-size:26px;font-weight:700}.m{color:var(--mut);font-size:13px}
+.bar{height:12px;background:var(--bd);border-radius:6px;overflow:hidden}.bar i{display:block;height:100%;background:var(--acc)}
+.row{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--bd);flex-wrap:wrap}.row:last-child{border:0}
+.bad{color:var(--bad)}.warn{color:var(--warn)}.ok{color:var(--acc)}
+.ov{overflow-x:auto}.note{background:var(--bg);border:1px dashed var(--bd);border-radius:8px;padding:8px;font-size:13px;color:var(--mut)}
+#qr{background:#fff;padding:8px;display:inline-block;border-radius:8px}
+
+/* Editorial redesign: visual styles only; app content and behaviour are unchanged. */
+:root{--bg:#f3f0e7;--fg:#202b24;--card:#fffdf7;--mut:#73776d;--acc:#356247;--bd:#d9d8cb;--bad:#b74d3e;--warn:#a46a24;--soft:#e8eadf;--shadow:none}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#171d18;--fg:#eeeade;--card:#202820;--mut:#b0b3a7;--acc:#a7c39b;--bd:#394238;--bad:#f18c7c;--warn:#e4b56c;--soft:#2b352b;--shadow:none}}
+:root[data-theme="dark"]{--bg:#171d18;--fg:#eeeade;--card:#202820;--mut:#b0b3a7;--acc:#a7c39b;--bd:#394238;--bad:#f18c7c;--warn:#e4b56c;--soft:#2b352b;--shadow:none}
+body{background:var(--bg);font-family:Arial,Helvetica,sans-serif;letter-spacing:0;-webkit-font-smoothing:antialiased}
+.w{max-width:1040px;padding:42px 30px 64px}
+h1{font-family:Georgia,'Times New Roman',serif;font-size:clamp(38px,5vw,52px);font-weight:700;letter-spacing:-.055em;line-height:1.02}
+.sub{font-size:13px;max-width:680px;margin:10px 0 26px;color:var(--mut)}
+nav{gap:0;margin:28px 0 24px;padding:0;background:transparent;border:0;border-bottom:1px solid var(--bd);border-radius:0;box-shadow:none}
+nav button{min-height:46px;border-radius:0;border:0;border-bottom:3px solid transparent;padding:12px 18px;font-size:13px;font-weight:700;color:var(--mut)}
+nav button.on,nav button.p{background:transparent;color:var(--acc);border-color:var(--acc);box-shadow:none}
+nav button:hover:not(:disabled){background:transparent;color:var(--fg);border-color:var(--bd)}
+nav button.on:hover{background:transparent;color:var(--acc);border-color:var(--acc)}
+button,select,input{font-family:Arial,Helvetica,sans-serif;font-size:14px}
+button{border-radius:7px;padding:10px 14px;font-weight:700;box-shadow:none;transition:background .15s ease,border-color .15s ease,color .15s ease}
+button:hover:not(:disabled){transform:none;box-shadow:none;border-color:var(--acc)}
+button.p{background:var(--acc);color:#fff;border-color:var(--acc);box-shadow:none}
+button.p:hover:not(:disabled){background:color-mix(in srgb,var(--acc) 88%,black);color:#fff}
+select,input{border-radius:6px;padding:10px 11px;background:var(--card);border-color:var(--bd)}
+.c{background:var(--card);border:1px solid var(--bd);border-radius:10px;padding:24px;margin-bottom:16px;box-shadow:none}
+h2{font-family:Georgia,'Times New Roman',serif;font-size:20px;letter-spacing:-.025em;font-weight:700;margin:0 0 15px}
+.g{gap:14px}
+.big{font-family:Georgia,'Times New Roman',serif;font-size:clamp(30px,4vw,40px);font-weight:700;letter-spacing:-.045em;line-height:1.15}
+.m{font-size:12px;letter-spacing:.01em}
+.bar{height:7px;border-radius:2px;background:var(--soft);margin:12px 0 9px}
+.bar i{border-radius:2px;background:var(--acc)}
+.row{padding:13px 0;border-bottom:1px solid var(--bd)}
+.row button{border-radius:5px;padding:7px 10px}
+.note{background:var(--soft);border:0;border-left:3px solid var(--acc);border-radius:0;padding:12px 15px;color:var(--fg)}
+#qr{border-radius:5px;border:1px solid var(--bd);box-shadow:none;padding:9px}
+.c .c{background:var(--bg);border:1px solid var(--bd);border-radius:7px;padding:17px;box-shadow:none}
+.c>.g button{min-height:94px;border-radius:7px;background:var(--bg);border-color:var(--bd);}
+.c>.g button:hover:not(:disabled){background:var(--soft)}
+.c p{margin-top:8px;margin-bottom:12px}
+@media(max-width:560px){.w{padding:28px 15px 42px}nav{gap:0;margin:20px 0 17px}nav button{padding:11px 8px;font-size:11px;min-height:44px}.c{padding:18px;border-radius:8px}.g{grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}.big{font-size:30px}h2{font-size:18px}}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{transition:none!important}}
+
+</style></head><body><div class="w">
+<h1>♻️ ReLoop</h1><p class="sub">Scan. Recycle. Earn. Verified by the bin itself. (Prototype with simulated scanner and bin scale)</p>
+<nav id="nav"></nav><div id="v"></div></div>
+<script>
+const RATE={Aluminium:10,Glass:3,Paper:2},CO2={Aluminium:9,Glass:0.3,Paper:0.9};
+const GUIDE={Aluminium:"Rinsed cans and foil",Glass:"Bottles and jars, no ceramics",Paper:"Clean paper, flat cardboard"};
+const CAP=20,GOAL=300;
+const R=["Aisha","Ben","Chen","Daniel","Evelyn","Farid"].map((n,i)=>({id:"RES-000"+(i+1),name:n,pts:0}));
+const REW=[{n:"Café drink discount",c:50},{n:"Grocery voucher RM10",c:120},{n:"Community pool pass",c:80},{n:"Plant a tree in the garden fund",c:30}];
+let T=[],bins={Aluminium:{w:30,cap:60},Paper:{w:41,cap:50},Glass:{w:55,cap:120}};
+let tab="res",cur="RES-0001",sess=null,pend=0,msg="",tid=0;
+const rs=id=>R.find(r=>r.id==id);
+function add(id,m,kg,st,today){const p=st=="ok"?Math.round(kg*RATE[m]):0;T.push({id:++tid,r:id,m,kg,p,st,today:!!today,t:new Date().toLocaleTimeString([],{hour:"2-digit",minute:"2-digit"})});rs(id).pts+=p;}
+[["RES-0001","Aluminium",8],["RES-0001","Paper",12],["RES-0001","Glass",15],["RES-0002","Paper",20,"bad"],["RES-0002","Glass",18],["RES-0003","Aluminium",6],["RES-0003","Paper",10],["RES-0004","Glass",60],["RES-0004","Aluminium",25],["RES-0004","Paper",40],["RES-0005","Paper",14],["RES-0005","Aluminium",5],["RES-0006","Glass",22],["RES-0006","Paper",9]].forEach(a=>add(a[0],a[1],a[2],a[3]||"ok"));
+const f=x=>(Math.round(x*100)/100).toString();
+const acc=()=>T.filter(t=>t.st=="ok");
+const kg=a=>a.reduce((s,t)=>s+t.kg,0);
+function go(t){tab=t;draw()}
+function draw(){
+document.getElementById("nav").innerHTML=[["res","Resident app"],["kio","Station kiosk"],["dash","SDP dashboard"]].map(a=>`<button class="${tab==a[0]?"on":""}" onclick="go('${a[0]}')">${a[1]}</button>`).join("");
+const v=document.getElementById("v");
+v.innerHTML=tab=="res"?resV():tab=="kio"?kioV():dashV();
+if(tab=="res"&&typeof QRCode!="undefined")new QRCode(document.getElementById("qr"),{text:cur,width:132,height:132});
+}
+function resV(){const r=rs(cur),h=T.filter(t=>t.r==cur).slice(-5).reverse(),k=kg(acc()),pc=Math.min(100,k/GOAL*100);
+return `<div class="c"><select onchange="cur=this.value;draw()">${R.map(x=>`<option value="${x.id}" ${x.id==cur?"selected":""}>${x.name}</option>`).join("")}</select>
+<div class="g" style="margin-top:12px;align-items:center"><div><div id="qr"></div><div class="m">Your ReLoop ID: ${r.id}</div></div><div><div class="m">Points balance</div><div class="big">${r.pts}</div></div></div></div>
+<div class="c"><h2>🌳 Community goal: garden fund</h2><div class="bar"><i style="width:${pc}%"></i></div><div class="m">${f(k)} / ${GOAL} kg recycled by the neighbourhood</div></div>
+<div class="c"><h2>Recent drop-offs</h2>${h.map(t=>`<div class="row"><span>${t.m} · ${f(t.kg)} kg</span><span class="${t.st=="ok"?"ok":"bad"}">${t.st=="ok"?"+"+t.p+" pts":"contaminated, 0 pts"}</span></div>`).join("")||'<div class="m">No drop-offs yet</div>'}</div>
+<div class="c"><h2>Rewards</h2>${REW.map((w,i)=>`<div class="row"><span>${w.n}<br><span class="m">${w.c} pts</span></span><button onclick="redeem(${i})" ${r.pts<w.c?"disabled":""}>Redeem</button></div>`).join("")}</div>`}
+function redeem(i){const r=rs(cur);if(r.pts>=REW[i].c){r.pts-=REW[i].c;draw()}}
+function kioV(){
+if(!sess)return `<div class="c"><h2>Station ST-01</h2><p class="sub">Scan your ReLoop code to start</p>
+${msg?`<p class="ok"><b>${msg}</b></p>`:""}
+<select id="who">${R.map(x=>`<option value="${x.id}">${x.name} (${x.id})</option>`).join("")}</select>
+<button class="p" onclick="scan()">📷 Scan QR code</button>
+<p class="note">Prototype: the camera scan is simulated by picking a resident. A real kiosk would read the QR from the resident’s phone.</p></div>`;
+const r=rs(sess.r);
+if(!sess.m)return `<div class="c"><h2>Welcome, ${r.name}</h2><p class="sub">Session started. Pick a material and its bin door will unlock.</p>
+<div class="g">${Object.keys(RATE).map(m=>`<button onclick="pick('${m}')"><b>${m}</b><br><span class="m">${GUIDE[m]}<br>${RATE[m]} pts/kg</span></button>`).join("")}</div>
+<p><button onclick="sess=null;draw()">Cancel</button></p></div>`;
+const rd=bins[sess.m].w+pend;
+return `<div class="c"><h2>${sess.m} bin: door unlocked 🔓</h2><p class="sub">Add your items, then close the door. Start weight: ${f(sess.s)} kg.</p>
+<div class="big">${f(rd)} kg <span class="m">live bin scale</span></div>
+<div class="c" style="margin-top:10px"><h2>🔧 Bin scale simulator</h2>
+<input id="amt" type="number" step="0.5" min="0" value="2.5" style="width:90px"> kg
+<button onclick="sim(1)">Add items</button> <button onclick="sim(-1)">Take items out</button></div>
+<button class="p" onclick="measure()">Close door and measure</button> <button onclick="sess=null;pend=0;draw()">Cancel</button></div>`}
+function scan(){sess={r:document.getElementById("who").value,m:null,s:0};pend=0;msg="";draw()}
+function pick(m){sess.m=m;sess.s=bins[m].w;pend=0;draw()}
+function sim(d){const a=parseFloat(document.getElementById("amt").value)||0;pend=Math.max(-bins[sess.m].w,pend+d*a);draw()}
+function measure(){
+const m=sess.m,d=pend,r=rs(sess.r);let out;
+if(Math.abs(d)<0.05)out="No weight change detected, so no points.";
+else if(d<0){out="Weight went down, so the session was flagged and no points were awarded.";bins[m].w+=d}
+else{const used=T.filter(t=>t.r==r.id&&t.today&&t.st=="ok").reduce((s,t)=>s+t.kg,0),room=Math.max(0,CAP-used),kgOk=Math.min(d,room);
+bins[m].w+=d;
+if(kgOk<=0)out="Daily cap of "+CAP+" kg reached, so no points.";
+else{add(r.id,m,kgOk,"ok",true);out="+"+Math.round(kgOk*RATE[m])+" points for "+f(kgOk)+" kg of "+m+(kgOk<d?" (daily cap applied)":"")+"! Thank you, "+r.name+".";}}
+msg=out;sess=null;pend=0;draw()}
+function dashV(){const a=acc(),k=kg(a),cr=T.length?(T.length-a.length)/T.length*100:0;
+const co=a.reduce((s,t)=>s+t.kg*CO2[t.m],0),pc=Math.min(100,k/GOAL*100);
+const wk={};a.forEach(t=>wk[t.r]=(wk[t.r]||0)+t.kg);const avg=R.reduce((s,r)=>s+(wk[r.id]||0),0)/R.length;
+const fl=R.filter(r=>(wk[r.id]||0)>3*avg);
+return `<div class="g"><div class="c"><div class="m">Total kg diverted</div><div class="big">${f(k)}</div></div>
+<div class="c"><div class="m">Contamination rate</div><div class="big">${f(cr)}%</div></div>
+<div class="c"><div class="m">CO₂e avoided (est.)</div><div class="big">${f(co)} kg</div></div></div>
+<div class="c"><h2>🌳 Community goal</h2><div class="bar"><i style="width:${pc}%"></i></div><div class="m">${f(k)} / ${GOAL} kg (${Math.round(pc)}%)</div></div>
+<div class="c"><h2>Bin fill levels, Station ST-01</h2>${Object.keys(bins).map(m=>{const b=bins[m],p=Math.min(100,b.w/b.cap*100);return `<div class="row"><span>${m}: ${f(b.w)} / ${b.cap} kg (${Math.round(p)}%) ${p>=80?'<b class="warn">schedule pickup</b>':""}</span><button onclick="empty('${m}')">Mark as emptied</button></div><div class="bar"><i style="width:${p}%;${p>=80?"background:var(--warn)":""}"></i></div>`}).join("")}</div>
+<div class="c"><h2>⚠️ Anomaly flags</h2>${fl.map(r=>`<div class="row bad"><span>${r.name} (${r.id}): ${f(wk[r.id])} kg, over 3× the average of ${f(avg)} kg</span></div>`).join("")||'<div class="m">No unusual activity</div>'}</div>
+<div class="c"><h2>Recent drop-offs (audit)</h2><div class="ov">${T.slice(-8).reverse().map(t=>`<div class="row"><span>${rs(t.r).name} · ${t.m} · ${f(t.kg)} kg</span><span>${t.st=="ok"?`<button onclick="audit(${t.id})">Mark contaminated</button>`:'<span class="bad">contaminated, points reversed</span>'}</span></div>`).join("")}</div></div>
+<p class="note">CO₂e uses illustrative factors (Aluminium 9, Paper 0.9, Glass 0.3 kg CO₂e per kg). Replace with cited EPA WARM figures before presenting.</p>`}
+function empty(m){bins[m].w=0;draw()}
+function audit(id){const t=T.find(x=>x.id==id);t.st="bad";const r=rs(t.r);r.pts=Math.max(0,r.pts-t.p);t.p=0;draw()}
+draw();
+</script></body></html>
